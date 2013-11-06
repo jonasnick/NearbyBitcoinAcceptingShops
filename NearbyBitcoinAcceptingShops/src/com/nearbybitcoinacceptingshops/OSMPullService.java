@@ -1,4 +1,4 @@
-package com.example.nearbybitcoinacceptingshops;
+package com.nearbybitcoinacceptingshops;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;

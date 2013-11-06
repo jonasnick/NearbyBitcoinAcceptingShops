@@ -1,12 +1,15 @@
-package com.example.nearbybitcoinacceptingshops;
+package com.nearbybitcoinacceptingshops;
 
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.IntentSender;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
+import com.nearbybitcoinacceptingshops.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -33,6 +36,13 @@ public class MainActivity extends Activity implements
 		this.mLocationClient = new LocationClient(this, this, this);
 	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.main, menu);
+	    return super.onCreateOptionsMenu(menu);
+		
+	}
 	/*
 	 * Called when the Activity becomes visible.
 	 */

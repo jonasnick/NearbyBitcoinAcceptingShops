@@ -1,11 +1,10 @@
-package com.example.nearbybitcoinacceptingshops;
+package com.nearbybitcoinacceptingshops;
 
 import org.json.JSONArray;
 
 import android.content.Context;
 import android.location.Location;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
 
 public class ConstructListView implements IUseAsyncJSONTaskResult {
 	private Context context;

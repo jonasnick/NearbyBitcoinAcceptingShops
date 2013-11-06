@@ -1,4 +1,4 @@
-package com.example.nearbybitcoinacceptingshops;
+package com.nearbybitcoinacceptingshops;
 
 public class Constants {
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.nearbybitcoinacceptingshops"
+    package="com.nearbybitcoinacceptingshops"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -18,7 +18,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.example.nearbybitcoinacceptingshops.MainActivity"
+            android:name="com.nearbybitcoinacceptingshops.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,7 +29,7 @@
         <activity android:name="com.google.android.gms.common.GooglePlayServicesUtil" />
 
         <service
-            android:name=".OSMPullService"
+            android:name="com.nearbybitcoinacceptingshops.OSMPullService"
             android:exported="false" />
 
         <meta-data

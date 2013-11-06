@@ -1,4 +1,4 @@
-package com.example.nearbybitcoinacceptingshops;
+package com.nearbybitcoinacceptingshops;
 
 import org.json.JSONException;
 import org.json.JSONObject;

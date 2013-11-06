@@ -1,4 +1,4 @@
-package com.example.nearbybitcoinacceptingshops;
+package com.nearbybitcoinacceptingshops;
 
 import java.util.ArrayList;
 import java.util.Collections;
