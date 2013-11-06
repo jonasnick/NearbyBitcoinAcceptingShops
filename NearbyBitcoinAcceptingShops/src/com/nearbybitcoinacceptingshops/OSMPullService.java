@@ -10,15 +10,19 @@ import java.net.URL;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 
 public class OSMPullService extends
 		AsyncTask<Void, Void, AsyncTaskResult<JSONArray>> {
 
 	private IUseAsyncJSONTaskResult resultUser;
+	private ProgressDialog progressDialog;
 
-	public OSMPullService(IUseAsyncJSONTaskResult resultUser) {
+	public OSMPullService(IUseAsyncJSONTaskResult resultUser,
+			ProgressDialog progressDialog) {
 		this.resultUser = resultUser;
+		this.progressDialog = progressDialog;
 	}
 
 	@Override
@@ -45,6 +49,7 @@ public class OSMPullService extends
 
 	@Override
 	protected void onPostExecute(AsyncTaskResult<JSONArray> result) {
+		this.progressDialog.dismiss();
 		this.resultUser.update(result);
 	}
 

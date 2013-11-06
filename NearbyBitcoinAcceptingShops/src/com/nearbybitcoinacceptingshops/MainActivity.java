@@ -2,6 +2,7 @@ package com.nearbybitcoinacceptingshops;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.IntentSender;
 import android.location.Location;
@@ -43,8 +44,15 @@ public class MainActivity extends Activity implements
 			return;
 		}
 
-		new OSMPullService(new ConstructListView(this, this.listView, location))
-				.execute();
+		ProgressDialog progressDialog = new ProgressDialog(this);
+		progressDialog.setTitle("Fetching shop data...");
+		progressDialog.setMessage("Please wait.");
+		progressDialog.setCancelable(false);
+		progressDialog.setIndeterminate(true);
+		progressDialog.show();
+		new OSMPullService(
+				new ConstructListView(this, this.listView, location),
+				progressDialog).execute();
 	}
 
 	@Override
