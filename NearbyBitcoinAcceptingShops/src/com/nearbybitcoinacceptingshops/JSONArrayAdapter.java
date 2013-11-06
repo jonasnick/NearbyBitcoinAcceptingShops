@@ -20,7 +20,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class JSONArrayAdapter extends BaseExpandableListAdapter {
 
@@ -71,12 +70,6 @@ public class JSONArrayAdapter extends BaseExpandableListAdapter {
 
 		}
 
-		Toast.makeText(
-				context,
-				Integer.toString(nodesAndWays.size())
-						+ Integer.toString(wayDefiningNodes.size())
-						+ Integer.toString(jsonArray.length()),
-				Toast.LENGTH_LONG).show();
 		for (int i = 0; i < nodesAndWays.size(); i++) {
 			try {
 				JSONObject obj = nodesAndWays.get(i);
