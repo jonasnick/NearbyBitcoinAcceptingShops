@@ -50,7 +50,7 @@ public class OSMPullService extends
 	@Override
 	protected void onPostExecute(AsyncTaskResult<JSONArray> result) {
 		this.progressDialog.dismiss();
-		this.resultUser.update(result);
+		this.resultUser.updateAsyncTaskResult(result);
 	}
 
 	private String readStream(InputStream is) {
