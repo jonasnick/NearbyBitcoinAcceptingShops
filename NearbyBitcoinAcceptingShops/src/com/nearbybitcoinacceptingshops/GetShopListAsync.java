@@ -67,7 +67,7 @@ public class GetShopListAsync extends
 				 */
 				this.locationClient = new LocationClient(context, this, this);
 				this.locationClient.connect();
-				Log.d("LocationClientSync", "Launched location client");
+				Log.d("GetShopListAsyncSync", "Launched location client");
 			}
 
 		}
@@ -99,7 +99,7 @@ public class GetShopListAsync extends
 
 	private AsyncTaskResult<JSONArray> getOnlineData() {
 		try {
-			Log.d("LocationClientSync", "doInBackground begin");
+			Log.d("GetShopListAsync", "doInBackground begin");
 			URL url = new URL(
 					"http://overpass.osm.rambler.ru/cgi/interpreter?data=[out:json];%28node[%22payment:bitcoin%22=yes];way[%22payment:bitcoin%22=yes];%3E;%29;out;");
 			HttpURLConnection urlConnection = (HttpURLConnection) url
@@ -111,7 +111,7 @@ public class GetShopListAsync extends
 
 			JSONObject jsonObject = new JSONObject(result);
 			JSONArray jsonArray = jsonObject.getJSONArray("elements");
-			Log.d("LocationClientSync", "doInBackground end");
+			Log.d("GetShopListAsync", "doInBackground end");
 
 			return new AsyncTaskResult<JSONArray>(jsonArray);
 		} catch (Exception e) {
@@ -121,12 +121,12 @@ public class GetShopListAsync extends
 
 	public void setLastLocation(Location lastLocation) {
 		this.lastLocation = lastLocation;
-		Log.d("LocationClientSync", "Set last location");
+		Log.d("GetShopListAsync", "Set last location");
 	}
 
 	public void setShopJsonArray(JSONArray shopJsonArray) {
 		this.shopJsonArray = shopJsonArray;
-		Log.d("LocationClientSync", "Set shopJsonArray");
+		Log.d("GetShopListAsync", "Set shopJsonArray");
 	}
 
 	public void continueFlow() {
@@ -138,7 +138,7 @@ public class GetShopListAsync extends
 	@Override
 	protected AsyncTaskResult<ArrayList<OSMObject>> doInBackground(
 			Void... params) {
-		Log.d("LocationClientSync", "Initiated getShopList");
+		Log.d("GetShopListAsync", "Initiated getShopList");
 		// connect to location client
 		Thread t = new Thread(new LocationClientSync(this, context));
 		t.start();
@@ -150,7 +150,7 @@ public class GetShopListAsync extends
 				return new AsyncTaskResult<ArrayList<OSMObject>>(e);
 			}
 		}
-		Log.d("LocationClientSync", "Return from LocationClientSync call");
+		Log.d("GetShopListAsync", "Return from LocationClientSync call");
 
 		if (!GetShopListAsync.hasInternetConnection(this.context))
 			return new AsyncTaskResult<ArrayList<OSMObject>>(new Exception(
@@ -160,12 +160,12 @@ public class GetShopListAsync extends
 			return new AsyncTaskResult<ArrayList<OSMObject>>(result.getError());
 		this.shopJsonArray = result.getResult();
 
-		Log.d("LocationClientSync", "Return from OSMPullService call");
+		Log.d("GetShopListAsync", "Return from OSMPullService call");
 
 		if (this.lastLocation != null) {
 			ArrayList<OSMObject> list = OSMObjectsProvider.extractOSMObjects(
 					this.shopJsonArray, this.lastLocation);
-			Log.d("LocationClientSync", "list ele " + list.get(0).getName());
+			Log.d("GetShopListAsync", "list ele " + list.get(0).getName());
 			return (new AsyncTaskResult<ArrayList<OSMObject>>(list));
 		} else
 			return new AsyncTaskResult<ArrayList<OSMObject>>(new Exception(
