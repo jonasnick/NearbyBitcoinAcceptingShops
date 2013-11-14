@@ -2,8 +2,6 @@ package com.nearbybitcoinacceptingshops;
 
 import java.util.ArrayList;
 
-import org.json.JSONArray;
-
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -14,39 +12,17 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
-public class OSMObjectsExpandableListAdapter extends BaseExpandableListAdapter
-		implements IUseAsyncJSONTaskResult {
+public class OSMObjectsExpandableListAdapter extends BaseExpandableListAdapter {
 
 	private final Context context;
 	private ArrayList<OSMObject> data;
-	private Location location;
 
-	public OSMObjectsExpandableListAdapter(Context context, Location location) {
+	public OSMObjectsExpandableListAdapter(Context context,
+			ArrayList<OSMObject> data) {
 		super();
 		this.context = context;
-		this.location = location;
-		this.data = new ArrayList<OSMObject>();
-		this.initiateDataUpdate();
-
-	}
-
-	private void initiateDataUpdate() {
-		FillingShopListInitiater.initiateFillingShopList(this.context, this);
-	}
-
-	@Override
-	public void updateAsyncTaskResult(AsyncTaskResult<JSONArray> result) {
-		if (result.getResult() != null) {
-
-			this.data = OSMObjectsProvider.extractOSMObjects(
-					result.getResult(), this.location);
-			this.notifyDataSetChanged();
-		} else {
-			Toast.makeText(context, result.getError().toString(),
-					Toast.LENGTH_SHORT).show();
-		}
+		this.data = data;
 	}
 
 	@Override
@@ -140,7 +116,7 @@ public class OSMObjectsExpandableListAdapter extends BaseExpandableListAdapter
 
 		switch (childPosition) {
 		case 0:
-			rowView.setText("open Maps");
+			rowView.setText("Google Maps");
 			MapListener mapListener = new MapListener(obj);
 			rowView.setOnClickListener(mapListener);
 			break;

@@ -1,9 +1,12 @@
 package com.nearbybitcoinacceptingshops;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.IntentSender;
-import android.location.Location;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,15 +15,10 @@ import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.location.LocationClient;
 
-public class MainActivity extends Activity implements
-		GooglePlayServicesClient.ConnectionCallbacks,
-		GooglePlayServicesClient.OnConnectionFailedListener {
+public class MainActivity extends Activity {
 	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
-	private LocationClient mLocationClient;
 	private ExpandableListView listView;
 
 	@Override
@@ -29,37 +27,7 @@ public class MainActivity extends Activity implements
 		setContentView(R.layout.activity_main);
 
 		this.listView = (ExpandableListView) findViewById(R.id.listview);
-
-		int googlePlayServicesCheck = GooglePlayServicesUtil
-				.isGooglePlayServicesAvailable(this);
-		if (googlePlayServicesCheck != ConnectionResult.SUCCESS) {
-			GooglePlayServicesUtil.getErrorDialog(googlePlayServicesCheck,
-					this, RESULT_OK);
-		} else {
-			/*
-			 * Create a new location client, using the enclosing class to handle
-			 * callbacks.
-			 */
-			this.mLocationClient = new LocationClient(this, this, this);
-		}
-	}
-
-	public void initiateFillingShopList() {
-		if (!this.mLocationClient.isConnected()) {
-			Toast.makeText(this, "Can not retrieve location.",
-					Toast.LENGTH_SHORT).show();
-			return;
-		}
-
-		Location location = this.mLocationClient.getLastLocation();
-		if (location == null) {
-			Toast.makeText(this, "Can not retrieve location.",
-					Toast.LENGTH_SHORT).show();
-			return;
-		}
-		this.listView.setAdapter(new OSMObjectsExpandableListAdapter(this,
-				location));
-
+		this.updateData();
 	}
 
 	@Override
@@ -78,7 +46,7 @@ public class MainActivity extends Activity implements
 			openSettings();
 			return true;
 		case R.id.action_refresh:
-			initiateFillingShopList();
+			this.updateData();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -86,7 +54,45 @@ public class MainActivity extends Activity implements
 	}
 
 	private void openSettings() {
-		// TODO Auto-generated method stub
+		// TODO:
+
+	}
+
+	private void updateData() {
+		class AsyncResultUser implements
+				IUseAsyncTaskResult<ArrayList<OSMObject>> {
+			private Context context;
+			private ProgressDialog progressDialog;
+
+			public AsyncResultUser(Context context,
+					ProgressDialog progressDialog) {
+				this.context = context;
+				this.progressDialog = progressDialog;
+			}
+
+			@Override
+			public void updateAsyncTaskResult(
+					AsyncTaskResult<ArrayList<OSMObject>> result) {
+				if (result.getResult() != null) {
+					listView.setAdapter(new OSMObjectsExpandableListAdapter(
+							this.context, result.getResult()));
+				} else {
+					Toast.makeText(this.context, result.getError().toString(),
+							Toast.LENGTH_LONG).show();
+				}
+				this.progressDialog.dismiss();
+
+			}
+
+		}
+		ProgressDialog progressDialog = new ProgressDialog(this);
+		progressDialog.setTitle("Fetching shop data...");
+		progressDialog.setMessage("Please wait.");
+		progressDialog.setCancelable(false);
+		progressDialog.setIndeterminate(true);
+		progressDialog.show();
+		new GetShopListAsync(new AsyncResultUser(this, progressDialog), this)
+				.execute();
 
 	}
 
@@ -96,8 +102,6 @@ public class MainActivity extends Activity implements
 	@Override
 	protected void onStart() {
 		super.onStart();
-		// Connect the client.
-		mLocationClient.connect();
 	}
 
 	/*
@@ -106,38 +110,12 @@ public class MainActivity extends Activity implements
 	@Override
 	protected void onStop() {
 		// Disconnecting the client invalidates it.
-		mLocationClient.disconnect();
 		super.onStop();
-	}
-
-	/*
-	 * Called by Location Services when the request to connect the client
-	 * finishes successfully. At this point, you can request the current
-	 * location or start periodic updates
-	 */
-	@Override
-	public void onConnected(Bundle arg0) {
-		// populate list when first connected
-		initiateFillingShopList();
-	}
-
-	/*
-	 * Called by Location Services if the connection to the location client
-	 * drops because of an error.
-	 */
-	@Override
-	public void onDisconnected() {
-		// Display the connection status
-		Toast.makeText(this,
-				"Disconnected from location service. Please re-connect.",
-				Toast.LENGTH_SHORT).show();
-
 	}
 
 	/*
 	 * Called by Location Services if the attempt to Location Services fails.
 	 */
-	@Override
 	public void onConnectionFailed(ConnectionResult connectionResult) {
 		/*
 		 * Google Play services can resolve some errors it detects. If the error
