@@ -126,9 +126,6 @@ public class OSMObjectsExpandableListAdapter extends BaseExpandableListAdapter {
 			rowView.setOnClickListener(osmClickListener);
 			break;
 		case 2:
-			rowView.setText(obj.getObject().toString());
-			break;
-		case 3:
 			String website = "";
 			if (obj.hasWebsite())
 				website = obj.getWebsite();
@@ -144,7 +141,7 @@ public class OSMObjectsExpandableListAdapter extends BaseExpandableListAdapter {
 
 	@Override
 	public int getChildrenCount(int groupPosition) {
-		return (this.data.get(groupPosition).hasWebsite() ? 4 : 3);
+		return (this.data.get(groupPosition).hasWebsite() ? 3 : 2);
 	}
 
 	@Override
