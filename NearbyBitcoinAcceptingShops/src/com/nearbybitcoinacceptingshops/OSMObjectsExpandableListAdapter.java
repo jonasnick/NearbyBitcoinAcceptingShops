@@ -4,12 +4,15 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.TextView;
 
 public class OSMObjectsExpandableListAdapter extends BaseExpandableListAdapter {
@@ -18,11 +21,27 @@ public class OSMObjectsExpandableListAdapter extends BaseExpandableListAdapter {
 	private ArrayList<OSMObject> data;
 
 	public OSMObjectsExpandableListAdapter(Context context,
-			ArrayList<OSMObject> data) {
+			ArrayList<OSMObject> data, ExpandableListView listView) {
 		super();
 		this.context = context;
 		this.data = data;
+		listView.setOnGroupClickListener(new SetFamiliarListener());
 	}
+
+	private class SetFamiliarListener implements OnGroupClickListener {
+	
+			@Override
+			public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+				OSMObject obj = data.get(groupPosition);
+				ObjectsDatabaseOpener db = new ObjectsDatabaseOpener(v.getContext());
+				if (!obj.isFamiliar(db.getReadableDatabase())) {
+					obj.setFamiliar(db.getWritableDatabase());
+					notifyDataSetChanged();
+				}
+				return false;
+			}
+	
+		}
 
 	@Override
 	public Object getChild(int groupPosition, int childPosition) {
@@ -113,6 +132,8 @@ public class OSMObjectsExpandableListAdapter extends BaseExpandableListAdapter {
 			rowView.setOnClickListener(siteListener);
 			rowView.setText(website);
 			break;
+		case 3:
+			rowView.setText(obj.getRawJSON().toString());
 		}
 
 		return rowView;
@@ -139,6 +160,7 @@ public class OSMObjectsExpandableListAdapter extends BaseExpandableListAdapter {
 		return position;
 	}
 
+	
 	@Override
 	public View getGroupView(int groupPosition, boolean isExpanded,
 			View convertView, ViewGroup parent) {
@@ -147,6 +169,9 @@ public class OSMObjectsExpandableListAdapter extends BaseExpandableListAdapter {
 		TextView rowView = (TextView) inflater.inflate(
 				android.R.layout.simple_expandable_list_item_1, parent, false);
 		OSMObject obj = this.data.get(groupPosition);
+		int color = obj.isFamiliar(new ObjectsDatabaseOpener(this.context)
+				.getReadableDatabase()) ? Color.BLACK : Color.MAGENTA;
+		rowView.setTextColor(color);
 
 		String city = "";
 		if (obj.hasCity())

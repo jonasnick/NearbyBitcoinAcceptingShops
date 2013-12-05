@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -73,6 +74,9 @@ public class OSMObjectsRemoteViewsFactory implements RemoteViewsFactory,
 				R.layout.widget_item);
 		OSMObject obj = this.data.get(position);
 		rv.setTextViewText(R.id.text_name, obj.getDistanceText());
+		int color = obj.isFamiliar(new ObjectsDatabaseOpener(this.context)
+				.getReadableDatabase()) ? Color.BLACK : Color.MAGENTA;
+		rv.setTextColor(R.id.text_name, color);
 
 		// Next, set a fill-intent, which will be used to fill in the pending
 		// intent template

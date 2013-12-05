@@ -75,7 +75,7 @@ public class MainActivity extends Activity {
 					AsyncTaskResult<ArrayList<OSMObject>> result) {
 				if (result.getResult() != null) {
 					listView.setAdapter(new OSMObjectsExpandableListAdapter(
-							this.context, result.getResult()));
+							this.context, result.getResult(), listView));
 				} else {
 					Toast.makeText(this.context, result.getError().toString(),
 							Toast.LENGTH_LONG).show();

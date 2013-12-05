@@ -5,6 +5,9 @@ import java.util.Locale;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.ContentValues;
+import android.database.DatabaseUtils;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 
 public class OSMObject {
@@ -35,7 +38,7 @@ public class OSMObject {
 		this.distanceToUser = userLocation.distanceTo(this.location);
 	}
 
-	public JSONObject getObject() {
+	public JSONObject getRawJSON() {
 		return completeObject;
 	}
 
@@ -101,9 +104,9 @@ public class OSMObject {
 	}
 
 	public String getOSMURI() {
-		String sType = this.getObject().optString("type");
+		String sType = this.getRawJSON().optString("type");
 		return "http://www.openstreetmap.org/browse/" + sType + "/"
-				+ this.getObject().optString("id");
+				+ this.getRawJSON().optString("id");
 	}
 
 	public String getGoogleMapsURI() {
@@ -123,6 +126,10 @@ public class OSMObject {
 		return uri;
 	}
 
+	public int hash() {
+		return this.completeObject.toString().hashCode();
+	}
+
 	public String getDistanceText() {
 		String sDistanceToUser = Float.toString((float) Math.round(this
 				.getDistanceToUser() / 100) / 10);
@@ -135,4 +142,17 @@ public class OSMObject {
 		return text;
 	}
 
+	public boolean isFamiliar(SQLiteDatabase db) {
+		long numEntries = DatabaseUtils.queryNumEntries(db,
+				ObjectsDatabaseOpener.TABLE_NAME, "hash=?",
+				new String[] { Integer.toString(this.hash()) });
+
+		return numEntries > 0;
+	}
+
+	public void setFamiliar(SQLiteDatabase db) {
+		ContentValues values = new ContentValues();
+		values.put("hash", this.hash());
+		db.insert(ObjectsDatabaseOpener.TABLE_NAME, null, values);
+	}
 }
