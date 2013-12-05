@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#F0F0F0"
-        android:text="empty"
+        android:text="Refreshing..."
         android:textColor="#232323"
         android:textSize="20sp" />
 

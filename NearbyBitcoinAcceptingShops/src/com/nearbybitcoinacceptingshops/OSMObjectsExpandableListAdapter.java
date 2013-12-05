@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,26 +43,9 @@ public class OSMObjectsExpandableListAdapter extends BaseExpandableListAdapter {
 
 		@Override
 		public void onClick(View v) {
-			if (obj.hasAddress()) {
-				Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-						Uri.parse("http://maps.google.com/maps?q="
-								+ this.obj.getName() + " "
-								+ this.obj.getAddress()));
-				v.getContext().startActivity(intent);
-
-			} else {
-				Location storeLocation = this.obj.getLocation();
-				String storeName = "";
-				if (this.obj.hasName())
-					storeName = this.obj.getName();
-
-				String sLocation = Double.toString(storeLocation.getLatitude())
-						+ "," + Double.toString(storeLocation.getLongitude());
-				Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-						Uri.parse("http://maps.google.com/maps?q=loc:"
-								+ sLocation + " " + "(" + storeName + ")"));
-				v.getContext().startActivity(intent);
-			}
+			Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+					Uri.parse(this.obj.getGoogleMapsURI()));
+			v.getContext().startActivity(intent);
 		}
 
 	}
@@ -77,10 +59,8 @@ public class OSMObjectsExpandableListAdapter extends BaseExpandableListAdapter {
 
 		@Override
 		public void onClick(View v) {
-			String sType = obj.getObject().optString("type");
 			Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-					Uri.parse("http://www.openstreetmap.org/browse/" + sType
-							+ "/" + obj.getObject().optString("id")));
+					Uri.parse(this.obj.getOSMURI()));
 			v.getContext().startActivity(intent);
 
 		}
@@ -167,17 +147,12 @@ public class OSMObjectsExpandableListAdapter extends BaseExpandableListAdapter {
 		TextView rowView = (TextView) inflater.inflate(
 				android.R.layout.simple_expandable_list_item_1, parent, false);
 		OSMObject obj = this.data.get(groupPosition);
-		String sDistanceToUser = Float.toString((float) Math.round(obj
-				.getDistanceToUser() / 100) / 10);
 
-		String name = "";
 		String city = "";
-		if (obj.hasName())
-			name = obj.getName();
 		if (obj.hasCity())
 			city = "in " + obj.getCity();
 
-		String text = sDistanceToUser + "km " + name + " " + city;
+		String text = obj.getDistanceText() + " " + city;
 		// + obj.getObject().toString();
 
 		rowView.setText(text);

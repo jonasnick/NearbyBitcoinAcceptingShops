@@ -1,5 +1,7 @@
 package com.nearbybitcoinacceptingshops;
 
+import java.util.Locale;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -78,7 +80,11 @@ public class OSMObject {
 	}
 
 	public String getWebsite() {
-		return this.tags.optString("website");
+		String website = this.tags.optString("website");
+		if (!website.toLowerCase(Locale.ENGLISH).matches("^\\w+://.*")) {
+			website = "http://" + website;
+		}
+		return website;
 	}
 
 	public boolean hasAddress() {
@@ -92,6 +98,41 @@ public class OSMObject {
 				+ this.tags.optString("addr:housenumber") + ", "
 				+ this.tags.optString("addr:postcode") + " "
 				+ this.tags.optString("addr:city");
+	}
+
+	public String getOSMURI() {
+		String sType = this.getObject().optString("type");
+		return "http://www.openstreetmap.org/browse/" + sType + "/"
+				+ this.getObject().optString("id");
+	}
+
+	public String getGoogleMapsURI() {
+		String uri = "http://maps.google.com/maps?q=";
+		if (this.hasAddress()) {
+			uri = uri + this.getName() + " " + this.getAddress();
+		} else {
+			Location storeLocation = this.getLocation();
+			String storeName = "";
+			if (this.hasName())
+				storeName = this.getName();
+
+			String sLocation = Double.toString(storeLocation.getLatitude())
+					+ "," + Double.toString(storeLocation.getLongitude());
+			uri = uri + "loc:" + sLocation + " " + "(" + storeName + ")";
+		}
+		return uri;
+	}
+
+	public String getDistanceText() {
+		String sDistanceToUser = Float.toString((float) Math.round(this
+				.getDistanceToUser() / 100) / 10);
+
+		String name = "";
+		if (this.hasName())
+			name = this.getName();
+
+		String text = sDistanceToUser + "km " + name;
+		return text;
 	}
 
 }
