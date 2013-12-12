@@ -1,5 +1,7 @@
 package com.nearbybitcoinacceptingshops;
 
+import java.util.ArrayList;
+
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -14,19 +16,17 @@ public class WidgetProvider extends AppWidgetProvider {
 	public static final String URI_ITEM = "com.nearbybitcoinacceptingshops.URI_ITEM";
 
 	// Called when the BroadcastReceiver receives an Intent broadcast.
-	// Checks to see whether the intent's action is TOAST_ACTION. If it is, the
-	// app widget
-	// displays a Toast message for the current item.
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		if (intent.getAction().equals(LAUNCH_ACTION)) {
-			String intentURI = intent.getStringExtra(URI_ITEM);
-			Intent launchIntent = new Intent(
-					android.content.Intent.ACTION_VIEW, Uri.parse(intentURI));
-			launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			context.startActivity(launchIntent);
-		}
 		super.onReceive(context, intent);
+		if (intent.getAction().equals(LAUNCH_ACTION)) {
+			ArrayList<String> intentURIs = intent.getStringArrayListExtra(URI_ITEM);
+
+			Intent i = new Intent(context,MainActivity.class);
+			i.putExtra("fromWidget", intentURIs);
+			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			context.startActivity(i);
+		}
 	}
 
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
@@ -73,7 +73,7 @@ public class WidgetProvider extends AppWidgetProvider {
 			// Set the action for the intent.
 			// When the user touches a particular view, it will have the effect
 			// of
-			// broadcasting TOAST_ACTION.
+			// broadcasting.
 			toastIntent.setAction(WidgetProvider.LAUNCH_ACTION);
 			toastIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
 					appWidgetIds[i]);

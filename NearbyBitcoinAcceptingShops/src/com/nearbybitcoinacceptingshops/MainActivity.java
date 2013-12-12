@@ -3,10 +3,14 @@ package com.nearbybitcoinacceptingshops;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentSender;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,7 +31,30 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 
 		this.listView = (ExpandableListView) findViewById(R.id.listview);
-		this.updateData();
+
+		Intent intent = getIntent();
+
+		final ArrayList<String> uris = intent.getStringArrayListExtra("fromWidget");
+		if(uris!=null) {
+			ArrayList<String> names = new ArrayList<String>();
+			names.add("Google Maps");names.add("OpenStreetMap Entry");
+			if(uris.size()>2) names.add("Website");
+			
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		    builder.setTitle("Choose Option")
+	           .setItems(names.toArray(new String[names.size()]), new DialogInterface.OnClickListener() {
+	               public void onClick(DialogInterface dialog, int which) {
+	            	   Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+	       					Uri.parse(uris.get(which)));
+		       			startActivity(intent);
+	               }
+		    });
+		    builder.create();
+		    builder.show();
+			
+		} else {
+			this.updateData();
+		}
 	}
 
 	@Override

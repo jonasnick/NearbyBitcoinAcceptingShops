@@ -9,30 +9,9 @@
     <TextView
         android:id="@+id/text_name"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:textColor="#000000"
         android:textSize="20sp" />
-
-    <ImageButton
-        android:id="@+id/button_GM"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_action_directions" />
-
-    <ImageButton
-        android:id="@+id/button_OSM"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_action_place" />
-
-    <ImageButton
-        android:id="@+id/button_Website"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_action_web_site" />
 
 </LinearLayout>

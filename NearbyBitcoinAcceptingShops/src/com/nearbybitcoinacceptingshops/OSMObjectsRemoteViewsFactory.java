@@ -80,26 +80,18 @@ public class OSMObjectsRemoteViewsFactory implements RemoteViewsFactory,
 
 		// Next, set a fill-intent, which will be used to fill in the pending
 		// intent template
-		// that is set on the collection view in StackWidgetProvider.
-		Bundle GM_extras = new Bundle();
-		GM_extras.putString(WidgetProvider.URI_ITEM, obj.getGoogleMapsURI());
-		Intent GMIntent = new Intent();
-		GMIntent.putExtras(GM_extras);
+		Bundle extras = new Bundle();
+		ArrayList<String> uris = new ArrayList<String>();
+		uris.add(obj.getGoogleMapsURI());
+		uris.add(obj.getOSMURI());
+		if(obj.hasWebsite()) uris.add(obj.getWebsite());
+		
+		extras.putStringArrayList(WidgetProvider.URI_ITEM, uris);
+		Intent intent = new Intent();
+		intent.putExtras(extras);
 		// Make it possible to distinguish the individual on-click
 		// action of a given item
-		rv.setOnClickFillInIntent(R.id.button_GM, GMIntent);
-
-		Bundle OSM_extras = new Bundle();
-		OSM_extras.putString(WidgetProvider.URI_ITEM, obj.getOSMURI());
-		Intent OSMIntent = new Intent();
-		OSMIntent.putExtras(OSM_extras);
-		rv.setOnClickFillInIntent(R.id.button_OSM, OSMIntent);
-
-		Bundle WS_extras = new Bundle();
-		WS_extras.putString(WidgetProvider.URI_ITEM, obj.getWebsite());
-		Intent WSIntent = new Intent();
-		WSIntent.putExtras(WS_extras);
-		rv.setOnClickFillInIntent(R.id.button_Website, WSIntent);
+		rv.setOnClickFillInIntent(R.id.text_name, intent);
 
 		// Return the remote views object.
 		return rv;
