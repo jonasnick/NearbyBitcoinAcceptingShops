@@ -20,9 +20,10 @@ public class WidgetProvider extends AppWidgetProvider {
 	public void onReceive(Context context, Intent intent) {
 		super.onReceive(context, intent);
 		if (intent.getAction().equals(LAUNCH_ACTION)) {
-			ArrayList<String> intentURIs = intent.getStringArrayListExtra(URI_ITEM);
+			ArrayList<String> intentURIs = intent
+					.getStringArrayListExtra(URI_ITEM);
 
-			Intent i = new Intent(context,MainActivity.class);
+			Intent i = new Intent(context, MainActivity.class);
 			i.putExtra("fromWidget", intentURIs);
 			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			context.startActivity(i);

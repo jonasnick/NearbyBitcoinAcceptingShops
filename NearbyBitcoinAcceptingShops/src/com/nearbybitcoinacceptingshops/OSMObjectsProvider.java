@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.util.Log;
 
@@ -84,5 +85,14 @@ public class OSMObjectsProvider {
 		}
 		Collections.sort(data, new OSMObjectComparator());
 		return data;
+	}
+
+	public static int getNumberNew(ArrayList<OSMObject> list, SQLiteDatabase db) {
+		int numNew = 0;
+		for (OSMObject obj : list) {
+			if (!obj.isFamiliar(db))
+				numNew++;
+		}
+		return numNew;
 	}
 }

@@ -84,8 +84,9 @@ public class OSMObjectsRemoteViewsFactory implements RemoteViewsFactory,
 		ArrayList<String> uris = new ArrayList<String>();
 		uris.add(obj.getGoogleMapsURI());
 		uris.add(obj.getOSMURI());
-		if(obj.hasWebsite()) uris.add(obj.getWebsite());
-		
+		if (obj.hasWebsite())
+			uris.add(obj.getWebsite());
+
 		extras.putStringArrayList(WidgetProvider.URI_ITEM, uris);
 		Intent intent = new Intent();
 		intent.putExtras(extras);

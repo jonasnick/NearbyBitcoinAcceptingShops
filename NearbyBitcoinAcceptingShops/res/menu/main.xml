@@ -3,12 +3,18 @@
     <item
         android:id="@+id/action_refresh"
         android:icon="@drawable/ic_action_refresh"
-        android:showAsAction="always"
-        android:title="@string/action_refresh"/>
+        android:showAsAction="always|withText"
+        android:title="@string/action_refresh"
+        />
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/action_settings"/>
+    
+<!--     <item android:id="@id/num_menu" -->
+<!--         android:showAsAction="always" -->
+<!--         android:title="@string/action_settings" -->
+<!--         android:actionLayout="@layout/num_menu_item"/> -->
 
 </menu>

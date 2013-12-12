@@ -24,6 +24,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 public class MainActivity extends Activity {
 	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 	private ExpandableListView listView;
+	private int numFamiliar=0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,24 +35,29 @@ public class MainActivity extends Activity {
 
 		Intent intent = getIntent();
 
-		final ArrayList<String> uris = intent.getStringArrayListExtra("fromWidget");
-		if(uris!=null) {
+		final ArrayList<String> uris = intent
+				.getStringArrayListExtra("fromWidget");
+		if (uris != null) {
 			ArrayList<String> names = new ArrayList<String>();
-			names.add("Google Maps");names.add("OpenStreetMap Entry");
-			if(uris.size()>2) names.add("Website");
-			
+			names.add("Google Maps");
+			names.add("OpenStreetMap Entry");
+			if (uris.size() > 2)
+				names.add("Website");
+
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		    builder.setTitle("Choose Option")
-	           .setItems(names.toArray(new String[names.size()]), new DialogInterface.OnClickListener() {
-	               public void onClick(DialogInterface dialog, int which) {
-	            	   Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-	       					Uri.parse(uris.get(which)));
-		       			startActivity(intent);
-	               }
-		    });
-		    builder.create();
-		    builder.show();
-			
+			builder.setTitle("Choose Option").setItems(
+					names.toArray(new String[names.size()]),
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							Intent intent = new Intent(
+									android.content.Intent.ACTION_VIEW, Uri
+											.parse(uris.get(which)));
+							startActivity(intent);
+						}
+					});
+			builder.create();
+			builder.show();
+
 		} else {
 			this.updateData();
 		}
@@ -62,6 +68,17 @@ public class MainActivity extends Activity {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.main, menu);
 		return super.onCreateOptionsMenu(menu);
+
+	}
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		MenuItem mi = menu.findItem(R.id.action_refresh);
+		mi.setTitle(Integer.toString(this.numFamiliar) + " NEW");
+		
+//		TextView tv = (TextView)this.findViewById(R.id.num_text);
+//		tv.setText();
+		return super.onPrepareOptionsMenu(menu);
 
 	}
 
@@ -101,6 +118,8 @@ public class MainActivity extends Activity {
 			public void updateAsyncTaskResult(
 					AsyncTaskResult<ArrayList<OSMObject>> result) {
 				if (result.getResult() != null) {
+					setFamiliarNum(result.getResult());
+					
 					listView.setAdapter(new OSMObjectsExpandableListAdapter(
 							this.context, result.getResult(), listView));
 				} else {
@@ -121,6 +140,14 @@ public class MainActivity extends Activity {
 		new GetShopListAsync(new AsyncResultUser(this, progressDialog), this)
 				.execute();
 
+	}
+	
+	private void setFamiliarNum(ArrayList<OSMObject> list) {
+
+		ObjectsDatabaseOpener db = new ObjectsDatabaseOpener(this);
+		this.numFamiliar = OSMObjectsProvider.getNumberNew(list,
+				db.getReadableDatabase());
+		invalidateOptionsMenu();
 	}
 
 	/*

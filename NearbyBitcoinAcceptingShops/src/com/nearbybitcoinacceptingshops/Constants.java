@@ -1,5 +1,7 @@
 package com.nearbybitcoinacceptingshops;
 
+import android.graphics.Color;
+
 public class Constants {
 
 	/*
@@ -16,5 +18,8 @@ public class Constants {
 
 	// refresh interval in hours
 	public static final int refreshInterval = 12;
+
+	// color of familiar items
+	public static final int familiar = Color.MAGENTA;
 
 }
